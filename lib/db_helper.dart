@@ -39,19 +39,20 @@ class DbHelper {
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
         "CREATE TABLE $tableCatatan($columId INTEGER PRIMARY KEY, $columJudul TEXT, $columCatatan TEXT, $columDate TEXT, $columTime TEXT)");
+    print("Table created");
   }
 
   Future<int> saveCatatan(Catatan catatan) async {
     var dbClient = await db;
     var result = await dbClient.insert(tableCatatan, catatan.toMap());
-
     return result;
+    
   }
 
   Future<List> getAllCatatan() async {
     var dbClient = await db;
-    var result = await dbClient
-        .query(tableCatatan, columns: [columId, columJudul, columCatatan, columDate, columTime]);
+    var result = await dbClient.query(tableCatatan,
+        columns: [columId, columJudul, columCatatan, columDate, columTime]);
     return result.toList();
   }
 

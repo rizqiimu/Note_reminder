@@ -49,21 +49,18 @@ class _ScreenCatatanState extends State<ScreenCatatan> {
                     decoration: InputDecoration(
                         labelText: 'judul',
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10))),
+                            borderRadius: BorderRadius.circular(7))),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(top: 12),
+                    padding: EdgeInsets.only(top: 10),
                   ),
                   TextField(
-                    maxLines: 7,
+                    maxLines: 8,
                     controller: _controllerCatatan,
                     decoration: InputDecoration(
                         labelText: 'catatan',
                         border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10))),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(top: 10),
+                            borderRadius: BorderRadius.circular(7))),
                   ),
                   Padding(
                     padding: EdgeInsets.only(top: 10),

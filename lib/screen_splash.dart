@@ -1,21 +1,20 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
-
+import 'package:flutter/material.dart';
 import 'listview_catatan.dart';
 
 class Splash extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Timer(Duration(seconds: 5), () {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => ListViewCatatan()));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+        return ListViewCatatan();
+      }));
     });
     return Scaffold(
       body: Center(
-        child: Container(
-          // color: Colors.blueGrey[100],
-          child: Image.asset("logo-1.jpeg")),
-      ),
+          child: Center(
+              child: Container(
+                  height: 150, child: Image.asset("img/bg-1.png")))),
     );
   }
 }
