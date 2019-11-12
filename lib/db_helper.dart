@@ -14,6 +14,7 @@ class DbHelper {
   final String columCatatan = 'catatan';
   final String columDate = 'date';
   final String columTime = 'time';
+  // final String columIdDevice = 'idDevice';
 
   static Database _db;
 
@@ -39,14 +40,13 @@ class DbHelper {
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
         "CREATE TABLE $tableCatatan($columId INTEGER PRIMARY KEY, $columJudul TEXT, $columCatatan TEXT, $columDate TEXT, $columTime TEXT)");
-    print("Table created");
   }
 
   Future<int> saveCatatan(Catatan catatan) async {
     var dbClient = await db;
     var result = await dbClient.insert(tableCatatan, catatan.toMap());
+    print(result);
     return result;
-    
   }
 
   Future<List> getAllCatatan() async {
