@@ -4,9 +4,9 @@ class Catatan {
   String _catatan;
   String _date;
   String _time;
-  // String _idDevice;
+  String _idDevice;
 
-  Catatan(this._judul, this._catatan, this._date, this._time);
+  Catatan(this._id,this._judul, this._catatan, this._date, this._time, this._idDevice);
 
   Catatan.map(dynamic obj) {
     this._id = obj['id'];
@@ -14,7 +14,7 @@ class Catatan {
     this._catatan = obj['catatan'];
     this._date = obj['date'];
     this._time = obj['time'];
-    // this._idDevice = obj['idDevice'];
+    this._idDevice = obj['idDevice'];
   }
 
   int get id => _id;
@@ -22,7 +22,7 @@ class Catatan {
   String get catatan => _catatan;
   String get date => _date;
   String get time => _time;
-  // String get idDevice => _idDevice;
+  String get idDevice => _idDevice;
 
   Map<String, dynamic> toMap() {
     var map = Map<String, dynamic>();
@@ -33,7 +33,7 @@ class Catatan {
     map['catatan'] = _catatan;
     map['date'] = _date;
     map['time'] = _time;
-    // map['idDevice'] = _idDevice;
+    map['idDevice'] = _idDevice;
 
     return map;
   }
@@ -44,6 +44,6 @@ class Catatan {
     this._catatan = map['catatan'];
     this._date = map['date'];
     this._time = map['time'];
-    // this._idDevice = map['_idDevice'];
+    this._idDevice = map['idDevice'];
   }
 }

@@ -14,7 +14,7 @@ class DbHelper {
   final String columCatatan = 'catatan';
   final String columDate = 'date';
   final String columTime = 'time';
-  // final String columIdDevice = 'idDevice';
+  final String columIdDevice = 'idDevice';
 
   static Database _db;
 
@@ -39,7 +39,7 @@ class DbHelper {
 
   void _onCreate(Database db, int newVersion) async {
     await db.execute(
-        "CREATE TABLE $tableCatatan($columId INTEGER PRIMARY KEY, $columJudul TEXT, $columCatatan TEXT, $columDate TEXT, $columTime TEXT)");
+        "CREATE TABLE $tableCatatan($columId INTEGER PRIMARY KEY, $columJudul TEXT, $columCatatan TEXT, $columDate TEXT, $columTime TEXT, $columIdDevice TEXT)");
   }
 
   Future<int> saveCatatan(Catatan catatan) async {
@@ -51,8 +51,14 @@ class DbHelper {
 
   Future<List> getAllCatatan() async {
     var dbClient = await db;
-    var result = await dbClient.query(tableCatatan,
-        columns: [columId, columJudul, columCatatan, columDate, columTime]);
+    var result = await dbClient.query(tableCatatan, columns: [
+      columId,
+      columJudul,
+      columCatatan,
+      columDate,
+      columTime,
+      columIdDevice
+    ]);
     return result.toList();
   }
 
@@ -65,8 +71,35 @@ class DbHelper {
   Future<Catatan> getCatatan(int id) async {
     var dbClient = await db;
     List<Map> result = await dbClient.query(tableCatatan,
-        columns: [columId, columJudul, columCatatan, columDate, columTime],
+        columns: [
+          columId,
+          columJudul,
+          columCatatan,
+          columDate,
+          columTime,
+          columIdDevice
+        ],
         where: '$columId = ?',
+        whereArgs: [id]);
+    if (result.length > 0) {
+      return Catatan.fromMap(result.first);
+    }
+    return null;
+  }
+
+  // get by Id Device
+  Future<Catatan> getCatatanByIdDevice(String id) async {
+    var dbClient = await db;
+    List<Map> result = await dbClient.query(tableCatatan,
+        columns: [
+          columId,
+          columJudul,
+          columCatatan,
+          columDate,
+          columTime,
+          columIdDevice
+        ],
+        where: '$columIdDevice = ?',
         whereArgs: [id]);
     if (result.length > 0) {
       return Catatan.fromMap(result.first);

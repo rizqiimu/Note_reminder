@@ -18,6 +18,7 @@ environment:
   sdk: any
 
 dependencies:
+  connectivity: 0.4.5+3
 
   device_id: ^0.1.3
   

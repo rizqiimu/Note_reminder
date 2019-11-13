@@ -1,8 +1,13 @@
+import 'dart:async';
+import 'dart:convert';
+import 'package:device_id/device_id.dart';
 import 'package:flutter/material.dart';
 import 'package:note_reminder/screen_about.dart';
 import 'catatan.dart';
 import 'db_helper.dart';
 import 'screen_catatan.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:http/http.dart' as http;
 
 class ListViewCatatan extends StatefulWidget {
   @override
@@ -15,6 +20,26 @@ class _ListViewCatatanState extends State<ListViewCatatan> {
   shapeCustom1() =>
       RoundedRectangleBorder(borderRadius: BorderRadius.circular(6));
 
+  // void deleteData() {
+  //   var url = "http://adityo.xyz/jatis/jatis_delete.php";
+  //   http.post(url, body: {'id': widget.list[widget.index]['id']});
+  // }
+  String _deviceId = "";
+
+  Future<void> getDeviceId() async {
+    String deviceId;
+    deviceId = await DeviceId.getID;
+
+    if (!mounted) return;
+
+    setState(() {
+      _deviceId = deviceId;
+    });
+    print(deviceId);
+  }
+
+  
+
   @override
   void initState() {
     super.initState();
@@ -25,6 +50,16 @@ class _ListViewCatatanState extends State<ListViewCatatan> {
         });
       });
     });
+  }
+
+  Future<void> checkInternet() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile &&
+        connectivityResult == ConnectivityResult.wifi) {
+      print("connected");
+    } else {
+      print("not connected");
+    }
   }
 
   @override
@@ -126,6 +161,9 @@ class _ListViewCatatanState extends State<ListViewCatatan> {
                   color: Color.fromARGB(255, 68, 44, 46),
                   fontWeight: FontWeight.bold)),
           onPressed: () {
+            // var url = "http://adityo.xyz/jatis/jatis_delete.php";
+            // http.post(url, body: {'id': list['index']['id']});
+
             db.deleteCatatan(catatan.id).then((catatans) {
               setState(() {
                 items.removeAt(position);
@@ -159,7 +197,7 @@ class _ListViewCatatanState extends State<ListViewCatatan> {
     String result = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => ScreenCatatan(Catatan('', '', '', ''))));
+            builder: (context) => ScreenCatatan(Catatan(null,'', '', '', '', ''))));
 
     if (result == 'save') {
       db.getAllCatatan().then((catatans) {
@@ -172,4 +210,9 @@ class _ListViewCatatanState extends State<ListViewCatatan> {
       });
     }
   }
+
+  // void deleteData() {
+  //   var url = "http://adityo.xyz/jatis/jatis_delete.php";
+  //   http.post(url, body: {'id': widget.list[widget.index]['id']});
+  // }
 }

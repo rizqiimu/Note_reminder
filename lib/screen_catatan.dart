@@ -1,17 +1,17 @@
 import 'dart:async';
-
+import 'dart:io';
+import 'dart:math';
 import 'package:device_id/device_id.dart';
 import 'package:flutter/material.dart';
 import 'package:note_reminder/catatan.dart';
 import 'package:note_reminder/db_helper.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:http/http.dart' as http;
-import 'dart:io';
+import 'package:connectivity/connectivity.dart';
 
 class ScreenCatatan extends StatefulWidget {
   final Catatan catatan;
   ScreenCatatan(this.catatan);
-
   @override
   _ScreenCatatanState createState() => _ScreenCatatanState();
 }
@@ -23,7 +23,7 @@ class _ScreenCatatanState extends State<ScreenCatatan> {
   TextEditingController _controllerDate;
   TextEditingController _controllerTime;
   String _deviceId = "";
-
+  int selection = 1100 + (Random(1).nextInt(2000 - 1000));
   @override
   void initState() {
     super.initState();
@@ -33,6 +33,16 @@ class _ScreenCatatanState extends State<ScreenCatatan> {
     _controllerDate = TextEditingController(text: widget.catatan.date);
     _controllerTime = TextEditingController(text: widget.catatan.time);
     getDeviceId();
+  }
+
+  Future<void> checkInternet() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile &&
+        connectivityResult == ConnectivityResult.wifi) {
+      print("connected");
+    } else {
+      print("not connected");
+    }
   }
 
   Future<void> getDeviceId() async {
@@ -51,6 +61,7 @@ class _ScreenCatatanState extends State<ScreenCatatan> {
     var url = "http://adityo.xyz/jatis/jatis_tambahdata.php";
 
     http.post(url, body: {
+      "id": 100000,
       "judul": _controllerJudul.text,
       "deskripsi": _controllerCatatan.text,
       "tanggal": "${_controllerDate.text} ${_controllerTime.text}",
@@ -59,6 +70,7 @@ class _ScreenCatatanState extends State<ScreenCatatan> {
 
     print(http.Response);
     print("${_controllerDate.text} ${_controllerTime.text}");
+    print(selection);
   }
 
   @override
@@ -174,6 +186,7 @@ class _ScreenCatatanState extends State<ScreenCatatan> {
                                   fontWeight: FontWeight.bold),
                             ),
                       onPressed: () async {
+                        print(widget.catatan.id);
                         if (widget.catatan.id != null) {
                           db
                               .updateCatatan(Catatan.fromMap({
@@ -187,30 +200,49 @@ class _ScreenCatatanState extends State<ScreenCatatan> {
                             Navigator.pop(context, 'update');
                           });
                         } else {
+                          // var connectivityResult =
+                          //     await (Connectivity().checkConnectivity());
+                          // if (connectivityResult == ConnectivityResult.mobile) {
+                          //   print("connected");
+                          // } else if (connectivityResult ==
+                          //     ConnectivityResult.wifi) {
+                          //   print("connected");
+                          // } else {
+                          //   print("not connected");
+                          // }
+
                           try {
                             final result =
                                 await InternetAddress.lookup('google.com');
                             if (result.isNotEmpty &&
                                 result[0].rawAddress.isNotEmpty) {
                               addData();
-                              db.saveCatatan(Catatan(
+                              db
+                                  .saveCatatan(Catatan(
+                                    selection,
                                       _controllerJudul.text,
                                       _controllerCatatan.text,
                                       _controllerDate.text,
-                                      _controllerTime.text))
+                                      _controllerTime.text,
+                                      "$_deviceId"))
                                   .then((_) {
                                 Navigator.pop(context, 'save');
                               });
+                              print("tersimpan di internet dan local");
                             }
                           } on SocketException catch (_) {
-                            db.saveCatatan(Catatan(
-                                      _controllerJudul.text,
-                                      _controllerCatatan.text,
-                                      _controllerDate.text,
-                                      _controllerTime.text))
-                                  .then((_) {
-                                Navigator.pop(context, 'save');
-                              });
+                            db
+                                .saveCatatan(Catatan(
+                                  selection,
+                                    _controllerJudul.text,
+                                    _controllerCatatan.text,
+                                    _controllerDate.text,
+                                    _controllerTime.text,
+                                    _deviceId))
+                                .then((_) {
+                              Navigator.pop(context, 'save');
+                            });
+                            print("tersimpan di local");
                           }
                         }
                       },
